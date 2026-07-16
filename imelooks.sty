@@ -468,54 +468,44 @@
 
 \iftoggle{IMEfonts}{
 
-  % Uma ótima opção de família para o corpo do texto é a libertinus,
-  % similar (mas não igual) à Times, mas com suporte a Small Caps e
-  % outras qualidades. A fonte teletype da família é serifada, então
-  % é melhor definir outra; a opção "mono=false" faz o pacote não
-  % carregá-la, mantendo a escolha anterior.
-  \RequirePackage[mono=false]{libertinus}
-
-  % Uma boa fonte teletype
-  \RequirePackage[scale=.85]{sourcecodepro}
-
+  % Família principal: TeX Gyre Pagella (clone da Palatino), com TeX
+  % Gyre Heros (clone da Helvetica) como fonte sem serifa e TeX Gyre
+  % Cursor (clone da Courier) como fonte teletype. A fonte matemática
+  % TeX Gyre Pagella Math só existe em formato OTF, então esta
+  % configuração exige LuaLaTeX ou XeLaTeX (fontspec/unicode-math).
   \ifPDFTeX
-    % A família libertinus por padrão não define uma fonte matemática
-    % específica para pdfLaTeX; uma opção que funciona bem com ela:
-    %\RequirePackage[libertine]{newtxmath}
-    % Outra, provavelmente melhor:
-    \RequirePackage{libertinust1math}
-  \fi
+    \PackageError{imelooks}
+      {TeX Gyre Pagella Math requires LuaLaTeX or XeLaTeX}
+      {TeX Gyre Pagella Math is only available as an OTF font, so\MessageBreak
+      it cannot be used with pdfLaTeX. Compile this document with\MessageBreak
+      lualatex or xelatex, or disable imelooks' "fonts" option.}
+  \else
+    \setmainfont{TeX Gyre Pagella}
+    \setsansfont{TeX Gyre Heros}
+    \setmonofont{TeX Gyre Cursor}
 
-  % Com LuaLaTeX/XeLaTeX, Libertinus configura também
-  % a fonte matemática; aqui só precisamos corrigir \mathit
-  \ifLuaTeX
-    \setmathfontface\mathit{Libertinus Serif Italic}
-  \fi
-  \ifXeTeX
-    % O nome de arquivo da fonte mudou na versão 2019-04-04
-    \@ifpackagelater{libertinus-otf}{2019/04/03}
-        {\setmathfontface\mathit{LibertinusSerif-Italic.otf}}
-        {\setmathfontface\mathit{libertinusserif-italic.otf}}
-  \fi
+    \RequirePackage{unicode-math}
+    \setmathfont{TeX Gyre Pagella Math}
 
-  % Vamos lembrar destas configurações
-  \let\LibertinusSerifFont\rmdefault
-  \let\LibertinusSansFont\sfdefault
-  \let\SourceCodeProFont\ttdefault
-  \let\LibertinusMDDefault\mddefault
-  \let\LibertinusBFDefault\bfdefault
-  \let\LibertinusUPdefault\updefault
-  \let\LibertinusITdefault\itdefault
-  \let\LibertinusSCdefault\scdefault
-  \let\LibertinusFamily\familydefault
-  \let\LibertinusSeries\seriesdefault
-  \let\LibertinusShape\shapedefault
-  \let\LibertinusMDrm\mdseries@rm
-  \let\LibertinusMDsf\mdseries@sf
-  \let\LibertinusMDtt\mdseries@tt
-  \let\LibertinusBFrm\bfseries@rm
-  \let\LibertinusBFsf\bfseries@sf
-  \let\LibertinusBFtt\bfseries@tt
+    % Vamos lembrar destas configurações
+    \let\IMErmFont\rmdefault
+    \let\IMEsfFont\sfdefault
+    \let\IMEttFont\ttdefault
+    \let\IMEmdDefault\mddefault
+    \let\IMEbfDefault\bfdefault
+    \let\IMEupDefault\updefault
+    \let\IMEitDefault\itdefault
+    \let\IMEscDefault\scdefault
+    \let\IMEfamilyDefault\familydefault
+    \let\IMEseriesDefault\seriesdefault
+    \let\IMEshapeDefault\shapedefault
+    \let\IMEmdRm\mdseries@rm
+    \let\IMEmdSf\mdseries@sf
+    \let\IMEmdTt\mdseries@tt
+    \let\IMEbfRm\bfseries@rm
+    \let\IMEbfSf\bfseries@sf
+    \let\IMEbfTt\bfseries@tt
+  \fi
 
   % Este comando é definido pela package url, que é carregada automaticamente
   % por hyperref; ele faz URLs com fonte sem serifa ao invés de teletype
@@ -1818,25 +1808,25 @@
   \setbeamercolor{footline}{fg=,bg=}
 
   % Com lualatex/xelatex, o tema metropolis usa a fonte Fira;
-  % aqui, voltamos à fonte libertinus, carregada anteriormente
+  % aqui, voltamos à fonte carregada anteriormente
   \iftoggle{IMEfonts}{
-    \let\rmdefault\LibertinusSerifFont
-    \let\sfdefault\LibertinusSansFont
-    \let\ttdefault\SourceCodeProFont
-    \let\mddefault\LibertinusMDDefault
-    \let\bfdefault\LibertinusBFDefault
-    \let\updefault\LibertinusUPdefault
-    \let\itdefault\LibertinusITdefault
-    \let\scdefault\LibertinusSCdefault
-    \let\familydefault\LibertinusFamily
-    \let\seriesdefault\LibertinusSeries
-    \let\shapedefault\LibertinusShape
-    \let\mdseries@rm\LibertinusMDrm
-    \let\mdseries@sf\LibertinusMDsf
-    \let\mdseries@tt\LibertinusMDtt
-    \let\bfseries@rm\LibertinusBFrm
-    \let\bfseries@sf\LibertinusBFsf
-    \let\bfseries@tt\LibertinusBFtt
+    \let\rmdefault\IMErmFont
+    \let\sfdefault\IMEsfFont
+    \let\ttdefault\IMEttFont
+    \let\mddefault\IMEmdDefault
+    \let\bfdefault\IMEbfDefault
+    \let\updefault\IMEupDefault
+    \let\itdefault\IMEitDefault
+    \let\scdefault\IMEscDefault
+    \let\familydefault\IMEfamilyDefault
+    \let\seriesdefault\IMEseriesDefault
+    \let\shapedefault\IMEshapeDefault
+    \let\mdseries@rm\IMEmdRm
+    \let\mdseries@sf\IMEmdSf
+    \let\mdseries@tt\IMEmdTt
+    \let\bfseries@rm\IMEbfRm
+    \let\bfseries@sf\IMEbfSf
+    \let\bfseries@tt\IMEbfTt
   }{}
 
 }{} % \iftoggle{IMEslides}
