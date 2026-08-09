@@ -346,15 +346,12 @@
 % Espaçamento simples
 \singlespacing
 
-% A introdução não tem número de capítulo, então os cabeçalhos também não
-\pagestyle{unnumberedchapter}
 \input{content/00-introduction}
-\pagestyle{mainmatter}
-% \input{conteudo/01-exemplo-normas-ime}
-% \input{conteudo/02-exemplo-usando-o-modelo}
-% \input{conteudo/03-exemplo-latex}
-% \input{conteudo/04-exemplo-tutorial}
-% \input{conteudo/05-exemplo-exemplos}
+\input{content/01-hpc-environmental-footprint}
+\input{content/02-what-the-field-measures}
+\input{content/03-preliminary-results}
+\input{content/04-research-plan}
+\input{content/05-schedule-and-contributions}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% APÊNDICES E ANEXOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -431,6 +428,6 @@
   heading=bibintoc, % Inclui a bibliografia no sumário
 ]
 
-\printindex % imprime o índice remissivo no documento (opcional)
+% \printindex % imprime o índice remissivo no documento (opcional)
 
 \end{document}
