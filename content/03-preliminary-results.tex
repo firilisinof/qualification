@@ -58,14 +58,15 @@ Greenfilling is not competitive in any evaluated scenario. \Cref{fig:greenfillin
 \toprule
 Machine & Regime & Objective & Footprint & Energy & Slowdown \\
 \midrule
-Mustang & slack & carbon & $-0.068\%$ & $0.000\%$ & $+323.6\%$ \\
-Mustang & slack & water & $-0.031\%$ & $0.000\%$ & $+308.5\%$ \\
-Mustang & stress & carbon & $+0.008\%$ & $+0.043\%$ & $+175.0\%$ \\
-Mustang & stress & water & $+0.014\%$ & $+0.044\%$ & $+161.5\%$ \\
-Trinity & slack & carbon & $-0.005\%$ & $0.000\%$ & $+210.1\%$ \\
-Trinity & slack & water & $-0.007\%$ & $0.000\%$ & $+211.5\%$ \\
-Trinity & stress & carbon & $+0.001\%$ & $0.000\%$ & $+226.6\%$ \\
-Trinity & stress & water & $-0.000\%$ & $0.000\%$ & $+213.3\%$ \\
+\multirow[t]{4}{*}{Mustang} & \multirow[t]{2}{*}{slack} & carbon & $-0.068\%$ & $0.000\%$ & $+323.6\%$ \\
+ & & water & $-0.031\%$ & $0.000\%$ & $+308.5\%$ \\
+ & \multirow[t]{2}{*}{stress} & carbon & $+0.008\%$ & $+0.043\%$ & $+175.0\%$ \\
+ & & water & $+0.014\%$ & $+0.044\%$ & $+161.5\%$ \\
+ \midrule
+\multirow[t]{4}{*}{Trinity} & \multirow[t]{2}{*}{slack} & carbon & $-0.005\%$ & $0.000\%$ & $+210.1\%$ \\
+ & & water & $-0.007\%$ & $0.000\%$ & $+211.5\%$ \\
+ & \multirow[t]{2}{*}{stress} & carbon & $+0.001\%$ & $0.000\%$ & $+226.6\%$ \\
+ & & water & $-0.000\%$ & $0.000\%$ & $+213.3\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -98,7 +99,7 @@ where $P_{\text{idle}}$ and $P_{\text{comp}}$ are the platform's idle and busy n
 
 Before the heuristic reaches the scheduler, the same cost function supports a static analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
 
-The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the whole horizon, consistent with the flatter daily profile of the water signals: averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}), a gap that holds across all three grids.
+The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the long run, likely due to its lower day-to-day variability. Averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}).
 
 \begin{figure}
 \centering
@@ -109,15 +110,20 @@ The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggreg
 
 \begin{table}
 \centering
-\caption{Mean swing of the carbon and water signals by grid, averaged over the 12 windows per country used in the Greenfilling campaign.}
+\caption{Swing of the carbon and water signals by grid, over the 12 windows per country used in the Greenfilling campaign.}
 \label{tab:shifting-swing}
-\begin{tabular}{lrr}
+\begin{tabular}{llrrrrr}
 \toprule
-Grid & Swing, carbon & Swing, water \\
+Grid & Signal & Mean & Median & Std & Min & Max \\
 \midrule
-Germany & 0.50 & 0.47 \\
-France & 0.32 & 0.29 \\
-Poland & 0.24 & 0.23 \\
+\multirow[t]{2}{*}{Germany} & carbon & 0.50 & 0.45 & 0.22 & 0.29 & 0.93 \\
+ & water & 0.47 & 0.39 & 0.21 & 0.27 & 0.84 \\
+\midrule
+\multirow[t]{2}{*}{France} & carbon & 0.32 & 0.30 & 0.08 & 0.18 & 0.51 \\
+ & water & 0.29 & 0.27 & 0.07 & 0.19 & 0.44 \\
+\midrule
+\multirow[t]{2}{*}{Poland} & carbon & 0.24 & 0.20 & 0.15 & 0.09 & 0.61 \\
+ & water & 0.23 & 0.19 & 0.15 & 0.10 & 0.60 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -156,7 +162,8 @@ Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bo
 \label{fig:shifting-saving-vs-bsld}
 \end{figure}
 
-The next step is to implement the heuristic as a scheduler variant and run it through the same campaign infrastructure. The static ceiling bounds what those experiments can find, and the distance between the two will measure what node capacity and queue contention take away.
+% TODO: decide if this paragraph is really necessary here. I don't think so.
+% The next step is to implement the heuristic as a scheduler variant and run it through the same campaign infrastructure. The static ceiling bounds what those experiments can find, and the distance between the two will measure what node capacity and queue contention take away.
 
 \section{Sufficiency-Aware Evaluation of HPC Systems}
 \label{sec:preliminary-evaluation}
