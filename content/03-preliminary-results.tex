@@ -5,5 +5,158 @@
 \section{Accounting for Environmental Cost in HPC Operations}
 \label{sec:preliminary-operations}
 
+\subsection{Greenfilling: Suppressing Backfill Starts on a Relative Signal}
+
+The batch scheduler is a practical place to act on operational impacts because it already decides when and where every job runs, but an environmental gain from scheduling is only worth having if the performance penalty stays acceptable. EASY backfilling is a well-established baseline for weighing that trade-off. It keeps a capacity reservation for the job at the head of the queue and raises utilization by filling the resulting gaps with later jobs that do not delay that reservation \parencite{skovira1996EASY, mualem2001Utilization}. The underlying question is whether a simple scheduling heuristic can lower an HPC center's carbon or water footprint without hurting performance. Greenfilling is a first attempt at answering it, and the smallest intervention we could make against the EASY baseline: it leaves the reservation untouched and modifies exactly one decision, permitting a backfill start only when the targeted grid intensity, carbon or water, observed at the scheduling instant does not exceed its exponential moving average. Building and evaluating it doubled as a first exercise of the simulation infrastructure this branch needs.
+
+The rule is event-driven: Greenfilling is implemented as a Batsched variant that subclasses the EASY implementation it is compared against, and the scheduler runs at every job arrival and completion. At the $k$-th such event, at time $t_k$, it reads the targeted intensity $I(t_k)$ from the 15-minute trace and updates a smoothed reference
+\begin{equation}
+\label{eq:greenfilling-ema}
+S_k = \alpha\, I(t_k) + (1 - \alpha)\, S_{k-1}, \qquad S_0 = I(t_0),
+\end{equation}
+with smoothing factor $\alpha = 0.5$ throughout the campaign. The scheduler permits backfill starts at $t_k$ if and only if $I(t_k) \le S_k$, and it schedules the reservation for the job at the head of the queue regardless of this condition. Because \Cref{eq:greenfilling-ema} advances once per scheduling event rather than once per trace step, the effective memory of $S_k$ tracks the density of arrivals and completions instead of wall-clock time. When many events fall inside one 15-minute step the reference converges toward the current sample, so how long backfill stays suppressed after an upward step of the signal depends on how busy the machine is, not only on $\alpha$.
+
+Evaluating Greenfilling first required simulation support that existing toolchains do not offer, since current simulators do not track time-varying carbon and water footprints and a recent extension in this direction covers only operational carbon emissions \parencite{saraiva2025Estimating}. We therefore extended SimGrid \parencite{casanova2025Lowering} and Batsim \parencite{dutot2017Batsim} with a per-host footprint model that accumulates operational carbon from the grid carbon intensity, on-site water through the water usage effectiveness (WUE), off-site water through the power usage effectiveness (PUE) and the grid water intensity, and embodied carbon and water as separate values. All four operational parameters can vary independently over time, Batsim replays timestamped updates to them during scheduling experiments, and each job's operational and embodied footprints are exported separately. The user-facing accounting, platform controls, and lifecycle-aware policies still to come will build on this same model.
+
+The grid signals derive from ENTSO-E actual net generation by production type \parencite{hirth2018ENTSOE}, resampled to a 15-minute grid and converted into generation-weighted carbon and water intensities using lifecycle carbon factors from UNECE where available and IPCC otherwise \parencite{unitednations2022Carbon, intergovernmentalpanelonclimatechange2015Climate} and operational water consumption factors \parencite{macknick2012Operational}. Germany, France, and Poland provide three contrasting signals from the same source and observation period, dominated by hard coal and lignite in Poland, by nuclear in France, and by a more mixed and changing supply in Germany. The contrast is not one-dimensional: France has the lowest mean carbon intensity of the three but the highest mean water intensity, 36.4 gCO\textsubscript{2}eq/kWh and 3.320 L/kWh against Poland's 569.4 gCO\textsubscript{2}eq/kWh and 1.587 L/kWh. A consistency check against Ember's independent production-based national intensities for 2018 to 2024 yields Pearson correlations between annual means of 0.987 for Germany, 0.994 for France, and 0.999 for Poland, with modeled levels 16.9\%, 34.0\%, and 19.7\% lower, a gap that the choice of emission factors largely explains. Since Greenfilling reacts to changes over time rather than to absolute levels, the preserved ordering and annual trend matter more here than the level offsets.
+
+The evaluation campaign pairs these signals with two LANL machines of different scales, Mustang at 1,600 nodes and Trinity at 9,408 nodes, each represented by one slack and one stress workload extract of four weeks selected on utilization and queue conditions. Each country contributes 12 environmental windows of 28 days, three drawn per season under a fixed seed, for 36 windows in total. Crossing windows, machines, workload regimes, and three schedulers, EASY plus a carbon-targeting and a water-targeting Greenfilling, gives 432 simulations, and pairing each Greenfilling run with the EASY run of the same window, machine, and regime gives 288 paired comparisons. \Cref{tab:greenfilling-campaign} summarizes the design. The platform model is deliberately simple: jobs are rigid and replayed at their recorded size, nodes draw 10 W idle and a constant 320 W or 270 W while busy on Mustang and Trinity, and the facility defaults to a PUE of 1, a WUE of 0, and no embodied values, so the campaign reports operational grid carbon and off-site water alone. Constant active power also bounds what scheduling can reach, since reordering the same jobs cannot change active energy and the only remaining levers are idle periods and the operational intensities a job encounters while it runs. We call Greenfilling competitive when it reduces the targeted operational footprint relative to EASY without increasing mean bounded slowdown.
+
+\begin{table}
+\centering
+\caption{Parameters of the Greenfilling evaluation campaign.}
+\label{tab:greenfilling-campaign}
+\begin{tabular}{ll}
+\toprule
+\multicolumn{2}{l}{\emph{Varied factors}} \\
+\midrule
+Grid signal country & Germany, France, Poland \\
+Environmental window & 12 per country, 3 per season, 28 days \\
+Machine & Mustang (1,600 nodes), Trinity (9,408 nodes) \\
+Workload regime & slack, stress \\
+Scheduler & EASY, carbon Greenfilling, water Greenfilling \\
+\midrule
+\multicolumn{2}{l}{\emph{Fixed settings}} \\
+\midrule
+EMA smoothing factor & $\alpha = 0.5$ \\
+Grid signal resolution & 15 minutes \\
+Node power & 10 W idle, 320/270 W busy (Mustang/Trinity) \\
+Facility model & PUE $=1$, WUE $=0$, no embodied impacts \\
+\midrule
+Total & 432 runs, 288 paired comparisons \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Greenfilling is not competitive in any evaluated scenario. \Cref{fig:greenfilling-deltas} shows the paired changes relative to EASY, and \Cref{tab:greenfilling-breakdown} breaks the medians down by machine, regime, and objective. No scenario median footprint change reaches 0.1\% in magnitude, for carbon or for water, while mean bounded slowdown rises in every one of the 288 pairs, between +24.5\% and +757.2\%, with scenario medians between +161.5\% and +323.6\%. The 95th-percentile waiting time of replayed jobs also rises in all 288 pairs. Even the most favorable case, Mustang under the slack regime, where carbon falls in 30 of 36 windows under carbon Greenfilling and water falls in 29 of 36 under water Greenfilling, buys those reductions at a median slowdown increase of +323.6\%. Under stress the Mustang medians turn slightly positive and Trinity stays near zero in both regimes. Zero of the 288 pairs reduce the targeted footprint without increasing mean bounded slowdown.
+
+\begin{table}
+\centering
+\caption{Median paired changes relative to EASY by machine, workload regime, and Greenfilling objective. The footprint column reports the signal each objective targets. On Mustang under slack the consumed platform energy is identical to EASY in every window, and on Trinity it is unchanged to numerical precision at the median.}
+\label{tab:greenfilling-breakdown}
+\begin{tabular}{lllrrr}
+\toprule
+Machine & Regime & Objective & Footprint & Energy & Slowdown \\
+\midrule
+Mustang & slack & carbon & $-0.068\%$ & $0.000\%$ & $+323.6\%$ \\
+Mustang & slack & water & $-0.031\%$ & $0.000\%$ & $+308.5\%$ \\
+Mustang & stress & carbon & $+0.008\%$ & $+0.043\%$ & $+175.0\%$ \\
+Mustang & stress & water & $+0.014\%$ & $+0.044\%$ & $+161.5\%$ \\
+Trinity & slack & carbon & $-0.005\%$ & $0.000\%$ & $+210.1\%$ \\
+Trinity & slack & water & $-0.007\%$ & $0.000\%$ & $+211.5\%$ \\
+Trinity & stress & carbon & $+0.001\%$ & $0.000\%$ & $+226.6\%$ \\
+Trinity & stress & water & $-0.000\%$ & $0.000\%$ & $+213.3\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The energy column of \Cref{tab:greenfilling-breakdown} separates the two ways a footprint can change under this platform model, consuming a different amount of energy or meeting a different intensity while consuming it. On Mustang under slack and on Trinity in both regimes the consumed energy does not move, so the footprint change there is purely an exposure change, and that exposure change stays below 0.1\%. Mustang under stress is the one exception. Median platform energy rises by 0.043\% under carbon Greenfilling and 0.044\% under water Greenfilling, while the effective targeted intensity, the targeted operational footprint divided by consumed energy, falls by 0.037\% and 0.032\%. The rule does buy a small exposure improvement there, but the extra energy from stretching the schedule cancels it, which is how the stress medians on Mustang end up slightly positive. The campaign accounts energy at the whole-platform level, so this decomposition shows the mechanism but cannot attribute the extra energy to individual jobs.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{greenfilling_deltas_vs_easy}
+\caption{Footprint and performance change relative to EASY across the 288 paired comparisons. Carbon and water footprint changes stay small, with medians below 0.1\% in magnitude, while mean bounded slowdown worsens in every pair.}
+\label{fig:greenfilling-deltas}
+\end{figure}
+
+The design itself points at why deferral did not translate into lower footprints. Greenfilling decides whether a backfill may start at the current instant, but it never selects a later start based on predicted intensity. Under constant active power, postponing a job changes its footprint only if its execution actually moves to lower-intensity intervals, and the campaign does not determine whether that condition failed because of the decision rule, the temporal structure of the signals, the workloads, or their interaction. The campaign does probe the signal hypothesis once. Each window's swing, the mean daily peak-to-trough range of the targeted signal divided by the window mean, correlates only weakly with the achieved saving, at a pooled Pearson $r = 0.079$ for carbon and $r = 0.247$ for water over 144 pairs per objective, with per-scenario coefficients between $-0.09$ and $0.59$ and no consistent sign. Every window is reused by all four machine and regime scenarios, so the pooled points are not independent, but windows with more intra-day variation did not systematically yield larger savings. The result is therefore narrow: under the evaluated signals, workloads, and platform assumptions, suppressing EASY's backfill starts on a moving-average comparison does not reduce the targeted footprint enough to offset its increase in mean bounded slowdown.
+
+Two lessons from the campaign now shape the mechanism that replaces it. The first is the asymmetry between refusing a start and choosing one. A suppressed backfill start buys a certain queueing delay for an environmental return that depends on the intensities the deferred job eventually meets, and the campaign shows how one-sided that bet is. The second is that a relative threshold and a relative metric compound each other. The rule fires on the same relative deviation in France as in Poland even though their mean carbon intensities differ by more than an order of magnitude, a 0.1\% saving reads identically in both, and the quantity that would distinguish them, the absolute footprint avoided per unit of scheduling penalty, was not measured. Together, these lessons set a lower bound: an intervention that only refuses starts on a relative signal is too little. A viable heuristic has to price both sides of each decision, the footprint of starting a job now against the footprint of waiting, and it has to weigh absolute rather than relative stakes.
+
+The campaign also produced reusable infrastructure. We release the intensity traces, workload extracts, campaign configuration, and analysis as a reproducible artifact\footnote{\url{https://github.com/Lucas-Doctorate-Project/experimental-artifacts/tree/paper}}, and we submitted this analysis to the EESP 2026 workshop.
+
+\subsection{Job Shifting: Pricing Each Start in Absolute Terms}
+
+The Greenfilling lessons point to job shifting as the next mechanism to explore. Rather than suppressing opportunistic starts on a relative comparison, the scheduler could choose each job's start time by pricing every candidate start within a bounded delay, in the absolute units of the targeted impact.
+
+The model prices a single job: let $j$ be a job with execution time $p_j$, $q_j$ allocated nodes, and submission time $r_j$, and let $I$ be the time-varying intensity of the targeted signal. Starting $j$ at a time $t \geq r_j$ costs
+\begin{equation}
+\label{eq:shifting-cost}
+C_j(t) = P_{\text{idle}}\, q_j \int_{r_j}^{t} I(\tau)\, \mathrm{d}\tau + P_{\text{comp}}\, q_j \int_{t}^{t + p_j} I(\tau)\, \mathrm{d}\tau,
+\end{equation}
+where $P_{\text{idle}}$ and $P_{\text{comp}}$ are the platform's idle and busy node powers. The first term charges for the wait: while $j$ holds back, its $q_j$ nodes sit idle and accumulate impact at the intensities of the interval $[r_j, t)$. The second term charges for the run, integrating the intensity over the window the execution would actually occupy rather than sampling it at the start. The heuristic selects the start $t^*$ that minimizes $C_j$ over $r_j \leq t \leq r_j + d_m$, where the maximum displacement $d_m$ bounds how long any job can be held. At $t = r_j$ the waiting term vanishes and \Cref{eq:shifting-cost} reduces to the cost of starting immediately, so not shifting is itself a candidate and the heuristic only moves a job when the trace ahead pays for the wait. Carbon and water each define their own cost function through their own intensity series, and thus their own $t^*$. The cost of deferral appears as idle exposure, the return appears as the difference in integrated intensity over the execution window, and both sides are absolute quantities rather than deviations from a moving average.
+
+Before the heuristic reaches the scheduler, the same cost function supports a static analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
+
+The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the whole horizon, consistent with the flatter daily profile of the water signals: averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}), a gap that holds across all three grids.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{shifting_ceiling_by_horizon}
+\caption{Ceiling of the static job-shifting analysis as a function of the maximum displacement $d_m$. The left panel shows the aggregate saving over all workloads and windows for each signal. The right panel shows the spread of the carbon saving across the 144 workload and window pairs.}
+\label{fig:shifting-ceiling-horizon}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{Mean swing of the carbon and water signals by grid, averaged over the 12 windows per country used in the Greenfilling campaign.}
+\label{tab:shifting-swing}
+\begin{tabular}{lrr}
+\toprule
+Grid & Swing, carbon & Swing, water \\
+\midrule
+Germany & 0.50 & 0.47 \\
+France & 0.32 & 0.29 \\
+Poland & 0.24 & 0.23 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Within that bound, the gains concentrate by grid and by season (\Cref{fig:shifting-ceiling-24h}). The German signal offers the most, with an aggregate ceiling of 11.69\% at 24 hours, against far less in France and Poland, and the seasons follow the same mechanism: spring reaches 12.32\% against winter's 4.89\%. The gap tracks the same swing metric: over the three windows drawn from each of the three grids, mean carbon swing is 0.50 in spring against 0.28 in winter, nearly double, so a job displaced in spring meets a wider daily range between low and high intensity than one displaced in winter, and that wider range is what the heuristic exploits. The four workload scenarios behave similarly, which points at the signal rather than the workload as the driver, though with only three windows per grid and season the seasonal split is still a tendency rather than a settled result.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{shifting_ceiling_at_24h}
+\caption{Ceiling at a $d_m$ of 24 hours across the 144 workload and window pairs, split by grid zone, workload scenario, and season.}
+\label{fig:shifting-ceiling-24h}
+\end{figure}
+
+Only a fraction of jobs actually move (\Cref{fig:shifting-displaced}): at a $d_m$ of 24 hours, 22.2\% of jobs are displaced at all, with a median displacement of 9.25 hours among those that move, while the other 78\% already start at the best point they can reach. The aggregate ceiling is therefore carried by roughly a fifth of the jobs, which sharpens the capacity caveat, since the bound assumes all of them fit into the same valleys at the same time.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{shifting_displaced_jobs}
+\caption{Share of jobs the static analysis displaces as a function of $d_m$ (left) and the distribution of the displacement $t^* - r_j$ among displaced jobs at a $d_m$ of 24 hours (right).}
+\label{fig:shifting-displaced}
+\end{figure}
+
+Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bounded slowdown, $\max\bigl(1, (t^* - r_j + p_j) / \max(p_j, \tau)\bigr)$ with a bounding threshold of $\tau = 10$ s, rises with every displacement. Under the carbon objective at a $d_m$ of 24 hours the mean bounded slowdown is 1.49 across all jobs and 3.22 among displaced jobs, with a 99th percentile of 15.4 (\Cref{fig:shifting-bsld}). Saving and delay also move together across scenarios: per workload and window pair, the carbon saving correlates with the mean bounded slowdown at $r = 0.874$ (\Cref{fig:shifting-saving-vs-bsld}). The windows that save the most are the windows where jobs wait the longest, so the trade-off is still there, but unlike under Greenfilling each unit of delay now buys a measured environmental return.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{shifting_bsld_distribution}
+\caption{Bounded slowdown implied by the displacements under the carbon objective. The left panel shows displaced jobs only, by maximum displacement. The right panel shows the cumulative distribution at a $d_m$ of 24 hours for all jobs and for displaced jobs only.}
+\label{fig:shifting-bsld}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{shifting_saving_vs_bsld}
+\caption{Carbon saving against mean bounded slowdown at a $d_m$ of 24 hours, one point per workload and window pair.}
+\label{fig:shifting-saving-vs-bsld}
+\end{figure}
+
+The next step is to implement the heuristic as a scheduler variant and run it through the same campaign infrastructure. The static ceiling bounds what those experiments can find, and the distance between the two will measure what node capacity and queue contention take away.
+
 \section{Sufficiency-Aware Evaluation of HPC Systems}
 \label{sec:preliminary-evaluation}
