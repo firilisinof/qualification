@@ -2,10 +2,9 @@
 \chapter{Preliminary Results}
 \label{ch:preliminary}
 
-\section{Accounting for Environmental Cost in HPC Operations}
-\label{sec:preliminary-operations}
+The mapping study in \Cref{ch:mapping} closed on a gap with two sides. HPC has no operational mechanism to act on environmental cost where scheduling and allocation decisions are made, and its instruments for judging whole systems measure efficiency where sufficiency is what counts. This chapter takes a first step into each. The first two sections work inside the batch scheduler and ask whether changing when jobs start can lower a center's carbon or water footprint without hurting performance. The last turns to evaluation, toward measures that weigh a computation against its environmental cost rather than its speed alone.
 
-\subsection{Greenfilling: Suppressing Backfill Starts on a Relative Signal}
+\section{Suppressing Backfill Starts on a Relative Signal}
 
 The batch scheduler is a practical place to act on operational impacts because it already decides when and where every job runs, but an environmental gain from scheduling is only worth having if the performance penalty stays acceptable. EASY backfilling is a well-established baseline for weighing that trade-off. It keeps a capacity reservation for the job at the head of the queue and raises utilization by filling the resulting gaps with later jobs that do not delay that reservation \parencite{skovira1996EASY, mualem2001Utilization}. The underlying question is whether a simple scheduling heuristic can lower an HPC center's carbon or water footprint without hurting performance. Greenfilling is a first attempt at answering it, and the smallest intervention we could make against the EASY baseline: it leaves the reservation untouched and modifies exactly one decision, permitting a backfill start only when the targeted grid intensity, carbon or water, observed at the scheduling instant does not exceed its exponential moving average. Building and evaluating it doubled as a first exercise of the simulation infrastructure this branch needs.
 
@@ -86,7 +85,7 @@ Two lessons from the campaign now shape the mechanism that replaces it. The firs
 
 The campaign also produced reusable infrastructure. We release the intensity traces, workload extracts, campaign configuration, and analysis as a reproducible artifact\footnote{\url{https://github.com/Lucas-Doctorate-Project/experimental-artifacts/tree/paper}}, and we submitted this analysis to the EESP 2026 workshop.
 
-\subsection{Job Shifting: Pricing Each Start in Absolute Terms}
+\section{Pricing Each Start in Absolute Terms}
 
 The Greenfilling lessons point to job shifting as the next mechanism to explore. Rather than suppressing opportunistic starts on a relative comparison, the scheduler could choose each job's start time by pricing every candidate start within a bounded delay, in the absolute units of the targeted impact.
 
@@ -165,5 +164,5 @@ Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bo
 % TODO: decide if this paragraph is really necessary here. I don't think so.
 % The next step is to implement the heuristic as a scheduler variant and run it through the same campaign infrastructure. The static ceiling bounds what those experiments can find, and the distance between the two will measure what node capacity and queue contention take away.
 
-\section{Sufficiency-Aware Evaluation of HPC Systems}
+\section{Evaluating HPC Systems for Sufficiency}
 \label{sec:preliminary-evaluation}
