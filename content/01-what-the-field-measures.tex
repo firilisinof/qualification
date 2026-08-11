@@ -1,0 +1,154 @@
+%!TeX root=../quali.tex
+\chapter{The Environmental Impacts of HPC}
+\label{ch:mapping}
+
+Before tackling the problem, one needs to understand how existing literature sees it. A systematic mapping study (SMS) enables a quick scan across a body of work to answer questions such as what has been studied, how it has been studied, and where the literature runs thin. This chapter presents what the map of the environmental impacts of high-performance computing looks like. The SMS was conducted following the guidelines of Petersen et al. \parencite{petersen2008Systematic}.
+
+\section{What the Existing Reviews Miss}
+
+What is the current landscape, how is it addressed, and where are the blind spots? These are the questions we sought answers to. However, existing reviews do not answer them in a satisfactory manner.
+
+Most of the existing work looks at operational energy. Reviews of HPC power and energy stay close to the running machine. O'Brien et al. \parencite{obrien2018Survey} survey predictive power and energy models for heterogeneous architectures, Czarnul et al. \parencite{czarnul2019EnergyAware} catalog energy-aware tools such as DVFS and power capping, Kocot et al. \parencite{kocot2023EnergyAware} review energy-aware scheduling, and Cai et al. \parencite{cai2011EnergyAware} organize the field around the trade-off between power and performance. Silva et al. \parencite{silva2024Review} reach further, integrating carbon and renewable management across infrastructure, hardware, software, and policy, yet the analysis still turns on the operational energy-carbon nexus and leaves the wider environmental picture to future work. These reviews map operational energy well. They do not set out to cover several environmental impacts, or to follow a system across its lifecycle.
+
+The broader sustainability literature on data centers repeats the pattern. Surveys there cover renewable integration and waste heat \parencite{shuja2016Sustainable}, cooling systems \parencite{zhang2021Survey}, thermal-aware scheduling \parencite{chaudhry2015ThermalAware}, and operational metrics such as PUE and WUE \parencite{nagarathinam2024Green}, and the most recent ones add explicit review protocols and richer operational measures \parencite{kahil2025Reinforcement, safari2025Systematic, kumar2026Sustainable}. The scope stays on operational efficiency, and the setting is the data center rather than HPC.
+
+A few reviews break out of that frame. Whitehead et al. \parencite{whitehead2014Assessing, whitehead2015Assessing} show what a wider data-center assessment can hold, spanning energy, carbon, water, materials, human health, and waste disposal across the lifecycle, and D'Orgeval et al. \parencite{dorgeval2024Improved} propose a holistic framework that joins environmental, economic, and ecosystem concerns. These are the works that show how embodied and operational impacts interact, and why operational energy alone is a thin basis for environmental judgment. They also step outside HPC to do it.
+
+Across the reviews we found, none brings all four together: HPC scope, a systematic protocol, several environmental impacts, and lifecycle coverage (\Cref{tab:comparison-rel}). The broad, lifecycle-aware reviews tend to look past HPC, and the HPC-focused ones tend to stay close to operational energy, so relatively little work sits at their intersection. That gap is what motivates a systematic mapping study. It applies an explicit protocol to a question the existing reviews mostly leave open: how the environmental impacts of HPC are discussed across the lifecycle.
+
+\begin{table}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\renewcommand{\tabularxcolumn}[1]{b{#1}}
+\begin{tabularx}{\textwidth}{@{}X>{\centering\arraybackslash}b{0.8cm}*{8}{>{\centering\arraybackslash}b{0.5cm}}@{}}
+\toprule
+\textbf{Reference} & \textbf{Year} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Systematic}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{HPC}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Carbon}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Water}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Materials}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Production}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Operational}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{End of Life}}} \\
+\midrule
+\citeauthor{cai2011EnergyAware} & 2011 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthor{whitehead2014Assessing} & 2014 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthor{whitehead2015Assessing} & 2015 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthor{chaudhry2015ThermalAware} & 2015 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
+\citeauthor{shuja2016Sustainable} & 2016 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
+\citeauthor{obrien2018Survey} & 2018 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthor{czarnul2019EnergyAware} & 2019 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthor{zhang2021Survey} & 2021 & & & & & & & \(\checkmark\) & \\
+\citeauthor{kocot2023EnergyAware} & 2023 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthor{silva2024Review} & 2024 & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthor{dorgeval2024Improved} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthor{nagarathinam2024Green} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \\
+\citeauthor{kahil2025Reinforcement} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
+\citeauthor{safari2025Systematic} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
+\citeauthor{kumar2026Sustainable} & 2026 & & & & & & & \(\checkmark\) & \\
+\midrule
+\textbf{Our study} & 2026 & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\bottomrule
+\end{tabularx}
+\caption{Related reviews and surveys compared along four dimensions: HPC scope, systematic methodology, breadth of environmental impacts, and lifecycle coverage. A review counts as systematic only if it documents a protocol with explicit inclusion and exclusion criteria and a screening process, following established guidelines such as those of Kitchenham et al. \parencite{kitchenham2007Guidelines} and Petersen et al. \parencite{petersen2008Systematic}.}
+\label{tab:comparison-rel}
+\end{table}
+
+\section{How the Map Was Drawn}
+
+The corpus was drawn from three bibliographic databases: IEEE Xplore, ACM Digital Library, and Scopus. The search query followed a Population, Intervention, Comparison, and Outcome rationale (\Cref{tab:pico}), pairing terms for HPC systems and infrastructure with terms for environmental assessment and sustainability, and it ran over titles, abstracts, and keywords. Inclusion and exclusion criteria were fixed before any record was read (\Cref{tab:criteria}). The three databases returned 4812 records, and 3788 remained once duplicates were removed.
+
+\begin{table}
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.16\textwidth}p{0.30\textwidth}>{\itshape}X}
+\toprule
+\textbf{Element} & \textbf{Definition} & \normalfont\textbf{Terms used} \\
+\midrule
+Population & HPC systems and infrastructure & high-performance computing, supercomputing, supercomputer, hpc \\
+Intervention & Environmental assessment or sustainability practices & sustainability, sustainable, ecological, footprint, environmental impact, carbon emission, greenhouse gas, water consumption, water usage, lifecycle assessment, lca, embodied carbon, e-waste, electronic waste, material depletion, resource consumption, rare earth \\
+\bottomrule
+\end{tabularx}
+\caption{PICO elements used to structure the SMS search string. Comparison and Outcome were not included, as they do not fit the purpose of the mapping.}
+\label{tab:pico}
+\end{table}
+
+\begin{table}
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.10\textwidth}X}
+\toprule
+\textbf{Code} & \textbf{Criterion} \\
+\midrule
+IC1 & Reports addressing at least one environmental impact in the HPC context \\
+IC2 & Reports presenting methodologies for predicting or measuring the environmental impacts of HPC systems \\
+\midrule
+EC1 & Reports not related to the study scope \\
+EC2 & Reports focusing solely on energy without connecting to broader environmental impacts \\
+EC3 & Reports not in English, unavailable, or inaccessible \\
+\bottomrule
+\end{tabularx}
+\caption{Selection criteria employed in this study.}
+\label{tab:criteria}
+\end{table}
+
+Screening these records paired a manually reviewed baseline with an automated pass. We first screened a subset by hand and extended it through backward and forward snowballing. Three large language models then voted independently on each record of the full corpus, and the records they agreed to include were decided by hand. The categories of the classification were not fixed in advance either. They were built inductively by keywording the abstracts of the included papers and grouping the terms that recurred. The full protocol, the database exports, the prompts, and the coding files are released with the study \parencite{rosa2026Environmental}. The search closed on 11 April 2026 and left a final corpus of 62 reports covering sixteen years of research.
+
+\section{A Field Published Elsewhere}
+
+One property of that corpus is worth stating before the classification, because it shapes how the field sees itself. More than seventy percent of the reports appeared outside the core venues of the HPC community, in general computer science, in parallel and distributed systems, and in domain-specific journals.
+
+The corpus is also young and uneven in time (\Cref{fig:mapping-venues-year}). Publication was sparse and intermittent from 2010 to 2021, only seventeen reports across twelve years, with several years contributing none at all. It then expanded sharply, with four reports in 2023, twelve in 2024, and twenty-four in 2025. The year 2026 is left out, since the search reached only its first months.
+
+Where that growth landed is the telling part. Between 2023 and 2025, venues outside HPC took the largest share of it, ahead of both the HPC venues and the parallel and distributed ones. Much of the recent work therefore circulates where HPC researchers do not routinely look, which suggests the distance between where this research is produced and where it would consolidate is widening rather than closing.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{mapping_venues_by_year}
+\caption{Annual report counts in the final corpus, segmented by venue category.}
+\label{fig:mapping-venues-year}
+\end{figure}
+
+\section{A Four-Facet Map of the Field}
+
+The keywording settled on four facets, and they carry the whole analysis (\Cref{fig:mapping-classification}). Each answers a different question about a paper. Environmental impacts ask what burden the work studies, and divide into carbon emissions, materials and waste, water use, and biodiversity and ecosystems. Lifecycle stages ask when in a system's life that burden falls, from production upstream, through operational use, to end of life. System loci ask where in the stack the work acts, from facility and energy infrastructure, through compute hardware, to software and workloads. Management and intervention levers ask how the impact is handled, from measurement and accounting toward workload and runtime optimization, infrastructure design, and incentives and policy. Three of the four facets are ordered rather than nominal, so a paper's place within them reads as a position on a scale, upstream to downstream, hardware to software, or measuring a problem to acting on it.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{mapping_classification}
+\caption{The four-facet classification scheme derived from keywording the corpus. Each facet is subdivided into categories: environmental impacts, lifecycle stages, system loci, and management and intervention levers.}
+\label{fig:mapping-classification}
+\end{figure}
+
+Environmental impacts anchor the other three. Reading each of the remaining facets against it turns the classification into the literature map: which impact is studied at which stage, at which locus, and under which lever. Seen this way, the informative feature of the corpus is not that it has a dense region but how narrow that region is, and how much of the map stays empty.
+
+\section{The Corridor}
+
+The four impact categories are not studied in anything close to equal measure (\Cref{fig:mapping-env-impacts}). Carbon emissions appear in 54 of the 62 reports. Materials and waste appear in 12, water use in 5, and biodiversity and ecosystems in a single report. The corpus also treats these burdens one at a time. Fifty-two reports address exactly one impact category, ten address two, and none reach three. The pairs that do occur are not arbitrary: nine of the ten two-impact reports combine carbon with materials, which share the same manufacturing inventories, and the one remaining pair joins carbon with water through cooling.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{mapping_env_impacts}
+\caption{Distribution of the 62 reports across the four environmental impact categories (left) and the number of categories each report addresses (right).}
+\label{fig:mapping-env-impacts}
+\end{figure}
+
+The same concentration holds along the other three facets, and it lines up into a single corridor (\Cref{fig:mapping-facet-bubbles}). The operational stage is the most populated point of the lifecycle for every impact category. Within carbon, the facility and energy infrastructure locus carries the most reports, 38 of them, ahead of software and workloads and of compute hardware. Among the levers, measurement and accounting leads. The densest cells therefore share four coordinates, carbon studied at the operational stage, at the facility level, and through measurement, and the bulk of the literature clusters where those coordinates meet.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{mapping_facet_bubbles}
+\caption{Co-occurrence of the environmental impact categories (rows) with the lifecycle stages, system loci, and management and intervention levers (columns), across the 62 reports. Bubble size encodes the number of reports in each cell, and a missing bubble marks a combination no report addresses.}
+\label{fig:mapping-facet-bubbles}
+\end{figure}
+
+Why the corridor falls where it does has less to do with which impacts matter and more with which are easy to instrument. Carbon is the readiest to quantify, because power telemetry and grid emission factors are widely available and external reporting gives an added reason to publish the numbers. Hölbling et al. \parencite{holbling2025Energy} use exactly these inputs to measure operational and embodied carbon across five Austrian universities and find a hundredfold variation in emissions per CPU hour with the regional electricity mix, and Rao et al. \parencite{rao2025Modeling} model the carbon footprint of hundreds of Top500 systems to produce the first fleet-wide estimates. The operational stage produces continuous telemetry and job logs without extra instrumentation, the facility level offers meters and emission factors as a ready-made signal, and measurement is the lever the others build on. The corridor, in other words, traces the availability of data more than the shape of the problem.
+
+\section{The Periphery}
+
+Outside the corridor each minor category thins in its own way, and the empty cells are as telling as the full ones. Water use grew out of cooling engineering and has stayed there. Its five reports sit entirely at the facility level, from groundwater cooling models \parencite{sheldon2015Groundwater} to thermosyphon designs that cut on-site consumption \parencite{sickinger2018Thermosyphon}, and only recently has the category begun to treat water as a footprint to model in its own right rather than a byproduct of cooling, accounting for the indirect water spent generating electricity and weighting it by regional scarcity \parencite{jiang2025ThirstyFLOPS}. Water reaches neither compute hardware nor software, and it never appears at end of life, even though chip fabrication consumes large volumes of ultrapure water \parencite{sandhu2025Semiconductor} and disposal-stage leaching can contaminate groundwater \parencite{houessionon2021Environmental}. Those burdens are real and documented, but not inside any HPC-specific study.
+
+Materials and waste is the larger of the minor categories, yet it rarely stands on its own. Nine of its twelve reports also account for carbon, and the work concentrates at compute hardware because both impacts draw on the same manufacturing-stage inventories, so materials tend to ride on data already gathered for carbon accounting. Only a few papers make materials the primary object, among them a proposal for a metal usage effectiveness metric defined per unit of computation \parencite{reinbigler2025Metal}. Materials do reach the end of life stage more often than the other minor categories, because electronic waste creates a tangible disposal pathway. Estimates put HPC e-waste disposal costs in the hundreds of millions of dollars within the decade \parencite{zhao2025HighPowered}, and several reports try to defer that cost by extending hardware life, whether by repurposing decommissioned machines \parencite{lynar2010Clustering} or by matching replacement cycles to the balance between embodied and operational carbon \parencite{uwizeyimana2025Carbonaware}.
+
+Biodiversity and ecosystems is the extreme case, present in a single report, a fab-to-grave analysis that measures embodied and operational biodiversity impact in species-year units and finds the operational share, driven by grid electricity, far larger than the embodied one \parencite{shi2025When}. The methods to produce a second such study exist in the broader environmental literature, including characterization factors that translate resource use into species loss \parencite{scherer2023Biodiversity}, but they have not been imported into HPC. The pattern across all three minor categories is the same. The boundary of the literature does not trace the boundary of HPC's environmental footprint. It traces the boundary of what the community has so far built the instruments to measure.
+
+\section{From Efficiency to Sufficiency}
+
+Concentrated on carbon measured during operation, the corpus treats efficiency as the sustainability problem, and that framing has a known limit. Gains in efficiency are repeatedly absorbed by growth in demand: studies of digital systems document rebound effects large enough to cancel the savings \parencite{peng2023Energy}, and analyses of Top500 machines show total electricity consumption still rising even as performance per watt improves \parencite{benhari2024Green, benhari2025Analysis}. Efficiency also leaves whole dimensions untouched. Embodied and other Scope 3 emissions are estimated at roughly 38 to 69 percent of a data center's carbon footprint \parencite{schneiderelectric2023Demystifying}, yet they sit outside the performance-per-watt metrics that dominate HPC evaluation, together with the water and material burdens the corridor never reaches.
+
+What the map points to is not a replacement for efficiency but a complement to it. Sufficiency asks whether a given computation is worth its environmental cost, not only how efficiently it runs, and it needs metrics that tie that cost to delivered scientific value, such as emissions per validated result rather than per unit of work \parencite{portegieszwart2020Ecological, lannelongue2021Green}. Groundwork already exists, from the Software Carbon Intensity specification and its functional units \parencite{greensoftwarefoundation2024Software} to frugality frameworks emerging in adjacent sectors \parencite{associationfrancaisedenormalisation2024General}. The gap the classification exposes is therefore twofold, and it sets the agenda for the rest of this document. The operational side of HPC has no mechanism to act on environmental cost where scheduling, allocation, and replacement decisions are actually made, and the field's instruments for evaluating whole systems measure efficiency where they would need to measure sufficiency. The preliminary results in \Cref{ch:preliminary} take a first step into each.
