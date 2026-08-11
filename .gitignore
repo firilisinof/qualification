@@ -335,7 +335,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 *.ist
-
-.claude/
 artifacts/
 .DS_Store
