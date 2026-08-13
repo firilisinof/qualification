@@ -84,6 +84,20 @@
 % de referências
 %\nocite{*}
 
+% Igual a \citeauthor, mas o nome do autor vira um link para a bibliografia.
+% \citeauthor não passa pelas macros corrigidas em plainnat-ime.cbx, porque
+% imprime \printnames diretamente, sem o wrapper bibhyperref.
+\DeclareCiteCommand{\citeauthorlink}
+  {\boolfalse{citetracker}%
+   \boolfalse{pagetracker}%
+   \usebibmacro{prenote}}
+  {\ifciteindex
+     {\indexnames{labelname}}
+     {}%
+   \printtext[bibhyperref]{\printnames{labelname}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
 % É possível definir como determinadas palavras podem (ou não) ser
 % hifenizadas; no entanto, a hifenização automática geralmente funciona bem
 \babelhyphenation{documentclass latexmk soft-ware clsguide} % todas as línguas

@@ -19,33 +19,37 @@ Across the reviews we found, none brings all four together: HPC scope, a systema
 \begin{table}
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
+% \setlength{\tabcolsep}{6pt}
 \renewcommand{\arraystretch}{1.2}
-\renewcommand{\tabularxcolumn}[1]{b{#1}}
-\begin{tabularx}{\textwidth}{@{}X>{\centering\arraybackslash}b{0.8cm}*{8}{>{\centering\arraybackslash}b{0.5cm}}@{}}
+\begin{threeparttable}
+\begin{tabularx}{\textwidth}{@{\hspace{6pt}}X*{9}{c}@{\hspace{6pt}}}
 \toprule
-\textbf{Reference} & \textbf{Year} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Systematic}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{HPC}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Carbon}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Water}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Materials}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Production}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{Operational}}} & \rotatebox[origin=l]{90}{\makebox[2.2cm][l]{\textbf{End of Life}}} \\
+\textbf{Reference} & \textbf{Year} & \textbf{D1} & \textbf{D2} & \textbf{D3} & \textbf{D4} & \textbf{D5} & \textbf{D6} & \textbf{D7} & \textbf{D8} \\
 \midrule
-\citeauthor{cai2011EnergyAware} & 2011 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
-\citeauthor{whitehead2014Assessing} & 2014 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
-\citeauthor{whitehead2015Assessing} & 2015 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
-\citeauthor{chaudhry2015ThermalAware} & 2015 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
-\citeauthor{shuja2016Sustainable} & 2016 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
-\citeauthor{obrien2018Survey} & 2018 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
-\citeauthor{czarnul2019EnergyAware} & 2019 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
-\citeauthor{zhang2021Survey} & 2021 & & & & & & & \(\checkmark\) & \\
-\citeauthor{kocot2023EnergyAware} & 2023 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
-\citeauthor{silva2024Review} & 2024 & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
-\citeauthor{dorgeval2024Improved} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
-\citeauthor{nagarathinam2024Green} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \\
-\citeauthor{kahil2025Reinforcement} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
-\citeauthor{safari2025Systematic} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
-\citeauthor{kumar2026Sustainable} & 2026 & & & & & & & \(\checkmark\) & \\
+\citeauthorlink{cai2011EnergyAware} & 2011 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthorlink{whitehead2014Assessing} & 2014 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthorlink{whitehead2015Assessing} & 2015 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthorlink{chaudhry2015ThermalAware} & 2015 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
+\citeauthorlink{shuja2016Sustainable} & 2016 & & & \(\checkmark\) & & & & \(\checkmark\) & \\
+\citeauthorlink{obrien2018Survey} & 2018 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthorlink{czarnul2019EnergyAware} & 2019 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthorlink{zhang2021Survey} & 2021 & & & & & & & \(\checkmark\) & \\
+\citeauthorlink{kocot2023EnergyAware} & 2023 & & \(\checkmark\) & & & & & \(\checkmark\) & \\
+\citeauthorlink{silva2024Review} & 2024 & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthorlink{dorgeval2024Improved} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
+\citeauthorlink{nagarathinam2024Green} & 2024 & & & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \\
+\citeauthorlink{kahil2025Reinforcement} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
+\citeauthorlink{safari2025Systematic} & 2025 & \(\checkmark\) & & \(\checkmark\) & \(\checkmark\) & & & \(\checkmark\) & \\
+\citeauthorlink{kumar2026Sustainable} & 2026 & & & & & & & \(\checkmark\) & \\
 \midrule
 \textbf{Our study} & 2026 & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) & \(\checkmark\) \\
 \bottomrule
 \end{tabularx}
-\caption{Related reviews and surveys compared along four dimensions: HPC scope, systematic methodology, breadth of environmental impacts, and lifecycle coverage. A review counts as systematic only if it documents a protocol with explicit inclusion and exclusion criteria and a screening process, following established guidelines such as those of Kitchenham et al. \parencite{kitchenham2007Guidelines} and Petersen et al. \parencite{petersen2008Systematic}.}
+\begin{tablenotes}
+\item D1 systematic protocol, D2 HPC scope, D3 carbon emissions, D4 water use, D5 materials and waste, D6 production stage, D7 operational stage, D8 end of life.
+\end{tablenotes}
+\end{threeparttable}
+\caption{Related reviews and surveys compared along four dimensions: systematic methodology (D1), HPC scope (D2), breadth of environmental impacts (D3--D5), and lifecycle coverage (D6--D8). A review counts under D1 only if it documents a protocol with explicit inclusion and exclusion criteria and a screening process, following established guidelines such as those of Kitchenham et al. \parencite{kitchenham2007Guidelines} and Petersen et al. \parencite{petersen2008Systematic}.}
 \label{tab:comparison-rel}
 \end{table}
 
