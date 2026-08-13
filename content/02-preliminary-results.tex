@@ -2,7 +2,7 @@
 \chapter{Preliminary Results}
 \label{ch:preliminary}
 
-The mapping study in \Cref{ch:mapping} closed on a gap with two sides. HPC has no operational mechanism to act on environmental cost where scheduling and allocation decisions are made, and its instruments for judging whole systems measure efficiency where sufficiency is what counts. This chapter takes a first step into each. The first two sections work inside the batch scheduler and ask whether changing when jobs start can lower a center's carbon or water footprint without hurting performance. The last turns to evaluation, toward measures that weigh a computation against its environmental cost rather than its speed alone.
+The mapping study in \Cref{ch:mapping} closed on a gap with two sides. HPC has no operational mechanism to act on environmental cost where scheduling and allocation decisions are made, and its instruments for judging whole systems measure efficiency where sufficiency is what counts. This chapter takes a first step into the operational side. Both sections work inside the batch scheduler and ask whether changing when jobs start can lower a center's carbon or water footprint without hurting performance. The evaluation side is newer and has not yet produced results. \Cref{sec:plan-evaluation} sets out how it will proceed.
 
 \section{Suppressing Backfill Starts on a Relative Signal}
 
@@ -96,14 +96,14 @@ C_j(t) = P_{\text{idle}}\, q_j \int_{r_j}^{t} I(\tau)\, \mathrm{d}\tau + P_{\tex
 \end{equation}
 where $P_{\text{idle}}$ and $P_{\text{comp}}$ are the platform's idle and busy node powers. The first term charges for the wait: while $j$ holds back, its $q_j$ nodes sit idle and accumulate impact at the intensities of the interval $[r_j, t)$. The second term charges for the run, integrating the intensity over the window the execution would actually occupy rather than sampling it at the start. The heuristic selects the start $t^*$ that minimizes $C_j$ over $r_j \leq t \leq r_j + d_m$, where the maximum displacement $d_m$ bounds how long any job can be held. At $t = r_j$ the waiting term vanishes and \Cref{eq:shifting-cost} reduces to the cost of starting immediately, so not shifting is itself a candidate and the heuristic only moves a job when the trace ahead pays for the wait. Carbon and water each define their own cost function through their own intensity series, and thus their own $t^*$. The cost of deferral appears as idle exposure, the return appears as the difference in integrated intensity over the execution window, and both sides are absolute quantities rather than deviations from a moving average.
 
-Before the heuristic reaches the scheduler, the same cost function supports a static analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
+Before the heuristic reaches the scheduler, the same cost function supports an offline analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
 
 The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the long run, likely due to its lower day-to-day variability. Averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}).
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{shifting_ceiling_by_horizon}
-\caption{Ceiling of the static job-shifting analysis as a function of the maximum displacement $d_m$. The left panel shows the aggregate saving over all workloads and windows for each signal. The right panel shows the spread of the carbon saving across the 144 workload and window pairs.}
+\caption{Ceiling of the offline job-shifting analysis as a function of the maximum displacement $d_m$. The left panel shows the aggregate saving over all workloads and windows for each signal. The right panel shows the spread of the carbon saving across the 144 workload and window pairs.}
 \label{fig:shifting-ceiling-horizon}
 \end{figure}
 
@@ -141,7 +141,7 @@ Only a fraction of jobs actually move (\Cref{fig:shifting-displaced}): at a $d_m
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{shifting_displaced_jobs}
-\caption{Share of jobs the static analysis displaces as a function of $d_m$ (left) and the distribution of the displacement $t^* - r_j$ among displaced jobs at a $d_m$ of 24 hours (right).}
+\caption{Share of jobs the offline analysis displaces as a function of $d_m$ (left) and the distribution of the displacement $t^* - r_j$ among displaced jobs at a $d_m$ of 24 hours (right).}
 \label{fig:shifting-displaced}
 \end{figure}
 
@@ -160,9 +160,3 @@ Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bo
 \caption{Carbon saving against mean bounded slowdown at a $d_m$ of 24 hours, one point per workload and window pair.}
 \label{fig:shifting-saving-vs-bsld}
 \end{figure}
-
-% TODO: decide if this paragraph is really necessary here. I don't think so.
-% The next step is to implement the heuristic as a scheduler variant and run it through the same campaign infrastructure. The static ceiling bounds what those experiments can find, and the distance between the two will measure what node capacity and queue contention take away.
-
-\section{Evaluating HPC Systems for Sufficiency}
-\label{sec:preliminary-evaluation}
