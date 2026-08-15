@@ -2,7 +2,7 @@
 \chapter{Preliminary Results}
 \label{ch:preliminary}
 
-The mapping study in \Cref{ch:mapping} closed on a gap with two sides. HPC has no operational mechanism to act on environmental cost where scheduling and allocation decisions are made, and its instruments for judging whole systems measure efficiency where sufficiency is what counts. This chapter takes a first step into the operational side. Both sections work inside the batch scheduler and ask whether changing when jobs start can lower a center's carbon or water footprint without hurting performance. The evaluation side is newer and has not yet produced results. \Cref{sec:plan-evaluation} sets out how it will proceed.
+This chapter begins with the operational direction through two studies of job timing inside the batch scheduler. The first tests a rule that suppresses backfill starts on a relative grid signal. The second prices candidate start times in absolute impact units and uses an offline analysis to bound what job shifting can achieve. Together, the studies show why refusing starts is insufficient and how much remains available to a scheduler that chooses them.
 
 \section{Suppressing Backfill Starts on a Relative Signal}
 
