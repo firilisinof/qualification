@@ -1,0 +1,172 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="testbed-architecture">
+    <mxGraphModel dx="843" dy="592" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1420" pageHeight="570" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="stageRule1" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#BFBFBF;strokeWidth=1.2;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="75" as="sourcePoint" />
+            <mxPoint x="620" y="535" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="stageRule2" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#BFBFBF;strokeWidth=1.2;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1190" y="75" as="sourcePoint" />
+            <mxPoint x="1190" y="535" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="generation" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="Generation mix +&lt;br&gt;impact factors" vertex="1">
+          <mxGeometry height="60" width="180" x="30" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="lanl" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="LANL traces" vertex="1">
+          <mxGeometry height="60" width="180" x="30" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="hardware" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="System specifications" vertex="1">
+          <mxGeometry height="60" width="180" x="30" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="trace" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="Carbon/water&lt;br&gt;trace (CSV)" vertex="1">
+          <mxGeometry height="60" width="180" x="390" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="workload" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="Batsim workload" vertex="1">
+          <mxGeometry height="60" width="180" x="390" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="platform" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="SimGrid platform" vertex="1">
+          <mxGeometry height="60" width="180" x="390" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="prep1" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="150" as="sourcePoint" />
+            <mxPoint x="390" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="prep2" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="310" as="sourcePoint" />
+            <mxPoint x="390" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="prep3" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="470" as="sourcePoint" />
+            <mxPoint x="390" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="prepLabel1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=16;fontColor=#000000;align=center;verticalAlign=bottom;" value="clean, resample&lt;br&gt;+ weight" vertex="1">
+          <mxGeometry height="42" width="200" x="200" y="102" as="geometry" />
+        </mxCell>
+        <mxCell id="prepLabel2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=16;fontColor=#000000;align=center;verticalAlign=bottom;" value="windowing +&lt;br&gt;job conversion" vertex="1">
+          <mxGeometry height="42" width="200" x="200" y="262" as="geometry" />
+        </mxCell>
+        <mxCell id="prepLabel3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=16;fontColor=#000000;align=center;verticalAlign=bottom;" value="platform +&lt;br&gt;power model" vertex="1">
+          <mxGeometry height="42" width="200" x="200" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="campaign" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#000000;strokeWidth=1.5;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Campaign&lt;/b&gt;&lt;br&gt;configuration" vertex="1">
+          <mxGeometry height="110" width="190" x="665" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="batsched" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#000000;strokeWidth=1.5;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Batsched&lt;/b&gt;&lt;br&gt;scheduler policy" vertex="1">
+          <mxGeometry height="60" width="210" x="930" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="batsim" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#000000;strokeWidth=1.5;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;Batsim&lt;/b&gt;&lt;br&gt;simulation orchestration" vertex="1">
+          <mxGeometry height="60" width="210" x="930" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="simgrid" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6E6E6;strokeColor=#000000;strokeWidth=1.5;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="&lt;b&gt;SimGrid&lt;/b&gt;&lt;br&gt;execution + energy + footprint model" vertex="1">
+          <mxGeometry height="75" width="210" x="930" y="432" as="geometry" />
+        </mxCell>
+        <mxCell id="toCampaign1" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="180" as="sourcePoint" />
+            <mxPoint x="665" y="262" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toCampaign2" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="310" as="sourcePoint" />
+            <mxPoint x="665" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toCampaign3" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="440" as="sourcePoint" />
+            <mxPoint x="665" y="358" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toEngine1" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="855" y="262" as="sourcePoint" />
+            <mxPoint x="930" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toEngine2" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="855" y="310" as="sourcePoint" />
+            <mxPoint x="930" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toEngine3" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="855" y="358" as="sourcePoint" />
+            <mxPoint x="930" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="exchange1" edge="1" parent="1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="180" as="sourcePoint" />
+            <mxPoint x="1035" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="exchange2" edge="1" parent="1" style="endArrow=block;endFill=1;startArrow=block;startFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="340" as="sourcePoint" />
+            <mxPoint x="1035" y="432" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="directSignal" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;dashed=1;dashPattern=4 3;strokeColor=#000000;strokeWidth=1.2;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="150" as="sourcePoint" />
+            <mxPoint x="930" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="directLabel" parent="1" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;fontFamily=Roboto Condensed;fontSize=15;fontStyle=2;fontColor=#555555;align=center;verticalAlign=middle;" value="selected signal" vertex="1">
+          <mxGeometry height="26" width="140" x="680" y="137" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="Job/run metrics" vertex="1">
+          <mxGeometry height="60" width="180" x="1225" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="analysis" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;fontSize=18;fontColor=#000000;align=center;verticalAlign=middle;" value="Paired analysis&lt;br&gt;footprint vs. performance" vertex="1">
+          <mxGeometry height="90" width="180" x="1225" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="toMetrics" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1140" y="310" as="sourcePoint" />
+            <mxPoint x="1225" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="toAnalysis" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;strokeColor=#000000;strokeWidth=1.3;fontFamily=Roboto Condensed;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1315" y="340" as="sourcePoint" />
+            <mxPoint x="1315" y="410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="stage1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=22;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;whiteSpace=wrap;" value="Prepare inputs" vertex="1">
+          <mxGeometry height="30" width="140" x="245" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="n9-4ODmQxtwIvw-AzNxZ-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fontFamily=Roboto Condensed;fontSize=22;align=center;verticalAlign=middle;fontStyle=1;strokeWidth=1.2;" value="1" vertex="1">
+          <mxGeometry height="30" width="30" x="215" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=22;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Configure and execute" vertex="1">
+          <mxGeometry height="30" width="220" x="797.5" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="n9-4ODmQxtwIvw-AzNxZ-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fontFamily=Roboto Condensed;fontSize=22;align=center;verticalAlign=middle;fontStyle=1;strokeWidth=1.2;" value="2" vertex="1">
+          <mxGeometry height="30" width="30" x="767.5" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Roboto Condensed;fontSize=22;fontStyle=1;fontColor=#000000;align=center;verticalAlign=middle;" value="Analyze" vertex="1">
+          <mxGeometry height="30" width="90" x="1285" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="n9-4ODmQxtwIvw-AzNxZ-4" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fontFamily=Roboto Condensed;fontSize=22;align=center;verticalAlign=middle;fontStyle=1;strokeWidth=1.2;" value="3" vertex="1">
+          <mxGeometry height="30" width="30" x="1255" y="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
