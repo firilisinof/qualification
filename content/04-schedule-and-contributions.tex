@@ -2,4 +2,46 @@
 \chapter{Schedule and Expected Contributions}
 \label{ch:schedule}
 
-% TODO: once the footprint model and the rest of the simulation infrastructure are stable, list upstreaming it into SimGrid and Batsim (rather than keeping it a fork) as a planned end-of-thesis contribution.
+This chapter turns the plan of \Cref{ch:plan} into a timeline and a list of deliverables. \Cref{sec:schedule-timeline} allocates the steps of both branches over the two years between this qualification and the thesis defense. \Cref{sec:schedule-contributions} lists what the thesis has produced so far and what it commits to produce.
+
+\section{Schedule}
+\label{sec:schedule-timeline}
+
+\Cref{fig:schedule-gantt} lays the steps of \Cref{ch:plan} over eight quarters, from September 2026 to August 2028. The branches run in parallel throughout. The job shifting arc comes first, since \Cref{ch:preliminary} left it one implementation away from an answer. The first step of the sufficiency branch follows one quarter later, once the shifting work is underway, and it stays near-term because it needs only public Top500 entries and published impact factors. The later steps of each branch follow the order \Cref{ch:plan} gives them. Replacement timing overlaps the end of the power state work because both build on the same simulation infrastructure, and the user mechanisms close the operations branch in the second year, starting as the what-if scenarios wind down.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{schedule}
+\caption{Schedule from the qualification to the thesis defense, in quarters. Each task carries the branch and step it implements from \Cref{ch:plan}. Diamonds mark the two planned paper submissions and the defense.}
+\label{fig:schedule-gantt}
+\end{figure}
+
+The two milestones in the middle of the timeline are paper submissions, one per branch. The first collects the operations results available by the end of the first year, the online shifting evaluation and the power state pricing. The second collects the wider ranking and the sufficiency indicators. We plan to submit both to high impact venues in the field, such as Supercomputing, ISC, and SBAC-PAD. The final six months are reserved for writing the thesis, which by then assembles chapters that already exist in some form as papers, analyses, and released artifacts.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{Xll}
+\toprule
+\textbf{Contribution} & \textbf{Branch} & \textbf{Status} \\
+\midrule
+Systematic mapping study \parencite{rosa2026Environmental}, Elsevier CSR & both & published \\
+Footprint model for SimGrid and Batsim & 1 & done \\
+Job shifting analysis, EESP 2026 & 1 & submitted \\
+Reproducible experimental artifact & both & ongoing \\
+Co-supervision of two undergraduate students & 1 & ongoing \\
+Operations branch paper & 1 & planned \\
+Sufficiency evaluation paper & 2 & planned \\
+Upstreaming the footprint model into SimGrid and Batsim & 1 & planned \\
+\bottomrule
+\end{tabularx}
+\caption{Contributions of this thesis. Branch 1 is the operations branch of \Cref{sec:plan-operations} and branch 2 the sufficiency evaluation of \Cref{sec:plan-evaluation}.}
+\label{tab:schedule-contributions}
+\end{table}
+
+\section{Expected Contributions}
+\label{sec:schedule-contributions}
+
+\Cref{tab:schedule-contributions} lists the contributions of this thesis, separating what is already delivered from what the schedule above commits to. The mapping study is published in Computer Science Review \parencite{rosa2026Environmental}. The footprint model and the Greenfilling analysis exist and support everything the operations branch plans next, and the analysis is under review at the 3rd International Workshop on Energy Efficiency with Sustainable Performance (IEEE/ACM SC EESP Workshop 2026). The experimental artifact is ongoing work that accumulates the traces, configurations, and analyses of each campaign as the research advances. Two undergraduate students work under our co-supervision on the preliminary results line, extending the shifting analysis. Once the footprint model and the simulation infrastructure around it are stable, we plan to upstream them into SimGrid and Batsim rather than maintain a fork, so the infrastructure outlives the thesis.
+
+These deliverables also carry contributions beyond their immediate results. For the field, the mapping study and the sufficiency evaluation widen how systems are judged beyond performance per watt, and the data boundary drawn in \Cref{sec:plan-evaluation} tells operators and vendors exactly which figures are missing and what publishing them would support. For practitioners, the mechanisms of the operations branch are candidate policies for schedulers and resource managers already in production, and their evaluation reports what every operator asks first, how much footprint a policy removes and how much slowdown it costs. For researchers, the footprint model, the traces, and the campaign tooling lower the cost of entering this line of work, and upstreaming them into SimGrid and Batsim keeps that infrastructure maintained after the thesis ends.
