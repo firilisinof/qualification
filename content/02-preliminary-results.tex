@@ -103,16 +103,14 @@ C_j(t) = P_{\text{idle}}\, q_j \int_{r_j}^{t} I(\tau)\, \mathrm{d}\tau + P_{\tex
 \end{equation}
 where $P_{\text{idle}}$ and $P_{\text{comp}}$ are the platform's idle and busy node powers. The first term charges for the wait: while $j$ holds back, its $q_j$ nodes sit idle and accumulate impact at the intensities of the interval $[r_j, t)$. The second term charges for the run, integrating the intensity over the window the execution would actually occupy rather than sampling it at the start. The heuristic selects the start $t^*$ that minimizes $C_j$ over $r_j \leq t \leq r_j + d_m$, where the maximum displacement $d_m$ bounds how long any job can be held. At $t = r_j$ the waiting term vanishes and \Cref{eq:shifting-cost} reduces to the cost of starting immediately, so not shifting is itself a candidate and the heuristic only moves a job when the trace ahead pays for the wait. Carbon and water each define their own cost function through their own intensity series, and thus their own $t^*$. The cost of deferral appears as idle exposure, the return appears as the difference in integrated intensity over the execution window, and both sides are absolute quantities rather than deviations from a moving average.
 
-Before the heuristic reaches the scheduler, the same cost function supports an offline analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
-
-The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the long run, likely due to its lower day-to-day variability. Averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}).
-
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{ceiling_by_horizon}
 \caption{Ceiling of the offline job-shifting analysis as a function of the maximum displacement $d_m$. The left panel shows the aggregate saving over all workloads and windows for each signal. The right panel shows the spread of the carbon saving across the 144 workload and window pairs.}
 \label{fig:shifting-ceiling-horizon}
 \end{figure}
+
+Before the heuristic reaches the scheduler, the same cost function supports an offline analysis of the workloads and traces. The grid signals are step functions on a 15-minute grid, so the integrals in \Cref{eq:shifting-cost} collapse into sums. We use this to compute a ceiling: for each job, excluding the warm-up jobs that reconstruct the machine state at the start of each extract, we record the saving it would collect if it could shift freely within $d_m$, and we accumulate these per-job gains over the same 144 workload and window combinations as the campaign, with the same platform power values, for $d_m$ between zero and 24 hours. The ceiling is optimistic by construction, since summing independent per-job gains ignores node capacity and queue contention and lets every job claim the same low-intensity valleys at once. Its value is diagnostic: if even this bound were small, no shifting heuristic on these signals would be worth implementing.
 
 \begin{table}
 \centering
@@ -134,7 +132,7 @@ Grid & Signal & Mean & Median & Std & Min & Max \\
 \end{tabular}
 \end{table}
 
-Within that bound, the gains concentrate by grid and by season (\Cref{fig:shifting-ceiling-24h}). The German signal offers the most, with an aggregate ceiling of 11.69\% at 24 hours, against far less in France and Poland, and the seasons follow the same mechanism: spring reaches 12.32\% against winter's 4.89\%. The gap tracks the same swing metric: over the three windows drawn from each of the three grids, mean carbon swing is 0.50 in spring against 0.28 in winter, nearly double, so a job displaced in spring meets a wider daily range between low and high intensity than one displaced in winter, and that wider range is what the heuristic exploits. The four workload scenarios behave similarly, which points at the signal rather than the workload as the driver, though with only three windows per grid and season the seasonal split is still a tendency rather than a settled result.
+The bound is not small, as \Cref{fig:shifting-ceiling-horizon} shows. The aggregate ceiling grows with the allowed displacement and reaches 6.76\% for carbon and 4.89\% for water at a $d_m$ of 24 hours, almost two orders of magnitude above the sub-0.1\% medians of the Greenfilling campaign. Water pays off less than carbon over the long run, likely due to its lower day-to-day variability. Averaged over the 12 windows per country used in the Greenfilling campaign, mean swing is 0.50 for carbon against 0.47 for water in Germany, 0.32 against 0.29 in France, and 0.24 against 0.23 in Poland (\Cref{tab:shifting-swing}).
 
 \begin{figure}
 \centering
@@ -143,7 +141,7 @@ Within that bound, the gains concentrate by grid and by season (\Cref{fig:shifti
 \label{fig:shifting-ceiling-24h}
 \end{figure}
 
-Only a fraction of jobs actually move (\Cref{fig:shifting-displaced}): at a $d_m$ of 24 hours, 22.2\% of jobs are displaced at all, with a median displacement of 9.25 hours among those that move, while the other 78\% already start at the best point they can reach. The aggregate ceiling is therefore carried by roughly a fifth of the jobs, which sharpens the capacity caveat, since the bound assumes all of them fit into the same valleys at the same time.
+Within that bound, the gains concentrate by grid and by season (\Cref{fig:shifting-ceiling-24h}). The German signal offers the most, with an aggregate ceiling of 11.69\% at 24 hours, against far less in France and Poland, and the seasons follow the same mechanism: spring reaches 12.32\% against winter's 4.89\%. The gap tracks the same swing metric: over the three windows drawn from each of the three grids, mean carbon swing is 0.50 in spring against 0.28 in winter, nearly double, so a job displaced in spring meets a wider daily range between low and high intensity than one displaced in winter, and that wider range is what the heuristic exploits. The four workload scenarios behave similarly, which points at the signal rather than the workload as the driver, though with only three windows per grid and season the seasonal split is still a tendency rather than a settled result.
 
 \begin{figure}
 \centering
@@ -152,7 +150,7 @@ Only a fraction of jobs actually move (\Cref{fig:shifting-displaced}): at a $d_m
 \label{fig:shifting-displaced}
 \end{figure}
 
-Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bounded slowdown, $\max\bigl(1, (t^* - r_j + p_j) / \max(p_j, \tau)\bigr)$ with a bounding threshold of $\tau = 10$ s, rises with every displacement. Under the carbon objective at a $d_m$ of 24 hours the mean bounded slowdown is 1.49 across all jobs and 3.22 among displaced jobs, with a 99th percentile of 15.4 (\Cref{fig:shifting-bsld}). Saving and delay also move together across scenarios: per workload and window pair, the carbon saving correlates with the mean bounded slowdown at $r = 0.874$ (\Cref{fig:shifting-saving-vs-bsld}). The windows that save the most are the windows where jobs wait the longest, so the trade-off is still there, but unlike under Greenfilling each unit of delay now buys a measured environmental return.
+Only a fraction of jobs actually move (\Cref{fig:shifting-displaced}): at a $d_m$ of 24 hours, 22.2\% of jobs are displaced at all, with a median displacement of 9.25 hours among those that move, while the other 78\% already start at the best point they can reach. The aggregate ceiling is therefore carried by roughly a fifth of the jobs, which sharpens the capacity caveat, since the bound assumes all of them fit into the same valleys at the same time.
 
 \begin{figure}
 \centering
@@ -160,6 +158,8 @@ Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bo
 \caption{Bounded slowdown implied by the displacements under the carbon objective. The left panel shows displaced jobs only, by maximum displacement. The right panel shows the cumulative distribution at a $d_m$ of 24 hours for all jobs and for displaced jobs only.}
 \label{fig:shifting-bsld}
 \end{figure}
+
+Shifting a job deterministically adds $t^* - r_j$ to its waiting time, so its bounded slowdown, $\max\bigl(1, (t^* - r_j + p_j) / \max(p_j, \tau)\bigr)$ with a bounding threshold of $\tau = 10$ s, rises with every displacement. Under the carbon objective at a $d_m$ of 24 hours the mean bounded slowdown is 1.49 across all jobs and 3.22 among displaced jobs, with a 99th percentile of 15.4 (\Cref{fig:shifting-bsld}). Saving and delay also move together across scenarios: per workload and window pair, the carbon saving correlates with the mean bounded slowdown at $r = 0.874$ (\Cref{fig:shifting-saving-vs-bsld}). The windows that save the most are the windows where jobs wait the longest, so the trade-off is still there, but unlike under Greenfilling each unit of delay now buys a measured environmental return.
 
 \begin{figure}
 \centering
